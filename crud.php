@@ -61,15 +61,15 @@ function wc_multi_warehouse_warehouses_create() {
           </tr>
           <tr>
             <th class="ss-th-width"><?php echo _('Email'); ?></th>
-            <td><input type="text" name="email" value="<?php echo $name; ?>" class="ss-field-width" /></td>
+            <td><input type="text" name="email" value="<?php echo $email; ?>" class="ss-field-width" /></td>
           </tr>
           <tr>
             <th class="ss-th-width"><?php echo _('public'); ?></th>
-            <td><input type="text" name="public" value="<?php echo $name; ?>" class="ss-field-width" /></td>
+            <td><input type="text" name="public" value="<?php echo $public; ?>" class="ss-field-width" /></td>
           </tr>
           <tr>
             <th class="ss-th-width"><?php echo _('Order'); ?></th>
-            <td><input type="text" name="sort" value="<?php echo $name; ?>" class="ss-field-width" /></td>
+            <td><input type="text" name="sort" value="<?php echo $sort; ?>" class="ss-field-width" /></td>
           </tr>
         </table>
         <input type='submit' name="insert" value='<?php echo _('Save');?>' class='button'>
