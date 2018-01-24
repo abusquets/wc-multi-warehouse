@@ -4,15 +4,29 @@ Plugin Name: WooCommerce Multi Warehouse
 Plugin URI: https://github.com/abusquets/wc-multi-warehouse
 Description: WooCommerce Multi Warehouse plugin
 Author: Alexandre Busquets Triola
-Version: 1.0.1
+Version: 1.0.5
 
-Copyright: © 2017 Alexandre Busquets Triola (email : abusquets@gmail.com)
+Copyright: © 2017 Alexandre Busquets Triola (email: abusquets@gmail.com)
 
 */
 
 function log_log($str, $log_file_path='log.log'){
+    if (is_array($str)) $str = print_r($str);
     error_log(date('d-m-Y, H:i:s') . ": " . $str . "\n", 3, $log_file_path);
 }
+
+
+function sample_admin_notice__success() {
+    if ('yes' !== WC_Admin_Settings::get_option('woocommerce_manage_stock')){
+        ?>
+        <div class="notice notice-error">
+            <p><?php _e('ERROR: WooCommerce manage stock is disabled. Please enable it.'); ?></p>
+        </div>
+        <?php
+    }
+}
+add_action( 'admin_notices', 'sample_admin_notice__success' );
+
 
 // function to create the DB tables
 function wc_multi_warehouse_install() {
@@ -40,15 +54,19 @@ function wc_multi_warehouse_install() {
 // run the install scripts upon plugin activation
 register_activation_hook(__FILE__, 'wc_multi_warehouse_install');
 
-if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
-}
 
-add_action( 'all', 'log_hook_calls' );
-function log_hook_calls() {
-    $f = current_filter();
-    if (strpos($f, 'woocommerce') !== false)
-        log_log($f, '/tmp/log-hook-calls.log');
+
+function wc_multi_warehouse_uninstall() {
+    global $wpdb;
+    $sql = "DROP TABLE {$wpdb->prefix}wc_warehouse;";
+    dbDelta($sql);
+
+    remove_menu_page('wc_multi_warehouse_warehouses_list');
+    remove_submenu_page(null, 'wc_multi_warehouse_warehouses_update' );
+
 }
+register_uninstall_hook(__FILE__, 'wc_multi_warehouse_uninstall');
+
 
 //menu items
 add_action('admin_menu','wc_multi_warehouse_warehouses_modifymenu');
@@ -80,5 +98,13 @@ function wc_multi_warehouse_warehouses_modifymenu() {
 }
 
 require_once('crud.php');
-require_once('extra_fields.php');
+require_once('stock_extra_fields.php');
+require_once('category_extra_fields.php');
 require_once('api.php');
+require_once('order_stock_functions.php');
+require_once('email.php');
+
+
+// add_filter( 'rest_authentication_errors', function(){
+//     wp_set_current_user( 1 ); // replace with the ID of a WP user with the authorization you want
+// }, 101 );

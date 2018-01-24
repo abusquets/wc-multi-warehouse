@@ -152,8 +152,37 @@ function wc_multi_warehouse_warehouses_update() {
   }
   //delete
   else if (isset($_POST['delete'])) {
+    $s = $wpdb->get_row($wpdb->prepare("SELECT code from $table_name where id=%s", $id));
+    $key =  'warehouse_'.stripslashes($s->code);
+    $table_posts = "{$wpdb->prefix}posts";
+    $table_post_meta = "{$wpdb->prefix}postmeta";
+
+    # Fem update a 0
+    $wpdb->query($wpdb->prepare("UPDATE $table_post_meta set meta_value='0' WHERE meta_key = %s", $code));
+    # Recalculem
+
+    $sql = "SELECT a.id from $table_posts a";
+    $sql .= " WHERE a.id IN(SELECT distinct post_id FROM $table_post_meta WHERE meta_key = '$key')";
+    $rows = $wpdb->get_results($sql, ARRAY_A);
+    foreach($rows as $row){
+        $sql = "SELECT SUM(CAST(meta_value AS UNSIGNED INTEGER)) as n FROM $table_post_meta WHERE post_id = " . $row['id'] . " AND meta_key LIKE 'warehouse_%'  AND meta_key <> '$key'";
+        # Hem d'actualitzar el producte
+        $s = $wpdb->get_row($sql);
+        $stock = $s->n;
+        print('SUM -> ' .$stock);
+        update_post_meta($row['id'], '_stock', $stock);
+        # Hem d'actualitzar instock
+        $status = 'instock';
+        if ($stock <= 0){
+            $status =  'outofstock';
+        }
+        update_post_meta($row['id'], '_stock_status', $status);
+    }
+    delete_post_meta_by_key($key);
     $wpdb->query($wpdb->prepare("DELETE FROM $table_name WHERE id = %s", $id));
+
   } else {//selecting value to update
+
     $s = $wpdb->get_row($wpdb->prepare("SELECT * from $table_name where id=%s", $id));
 
     $code =  stripslashes($s->code);
