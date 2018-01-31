@@ -1,3 +1,8 @@
 # wc-multi-warehouse
 
-In development, don't use.
+
+Allows to have several warehouses in Woocommerce.
+
+## TODO:
+
+- I18n
