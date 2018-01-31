@@ -4,7 +4,7 @@ Plugin Name: WooCommerce Multi Warehouse
 Plugin URI: https://github.com/abusquets/wc-multi-warehouse
 Description: WooCommerce Multi Warehouse plugin
 Author: Alexandre Busquets Triola
-Version: 1.0.5
+Version: 1.0.8
 
 Copyright: © 2017 Alexandre Busquets Triola (email: abusquets@gmail.com)
 
