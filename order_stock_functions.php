@@ -9,7 +9,7 @@ function order_stock_to_warehouses($order)
 
     global $wpdb;
     $table_post_meta = "{$wpdb->prefix}postmeta";
-    $table_warehouse = "{$wpdb->prefix}warehouse";
+    $table_warehouse = "{$wpdb->prefix}wc_warehouse";
 
     // Iterating through each WC_Order_Item_Product objects
     foreach ($order->get_items() as $item_key => $item_values) {
