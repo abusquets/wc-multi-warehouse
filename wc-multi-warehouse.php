@@ -31,33 +31,33 @@ add_action( 'admin_notices', 'sample_admin_notice__success' );
 // function to create the DB tables
 function wc_multi_warehouse_install() {
     global $wpdb;
-
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
     $charset_collate = $wpdb->get_charset_collate();
     $sql = "
-        CREATE TABLE {$wpdb->prefix}wc_warehouse (
-            `id` int(4) unsigned NOT NULL AUTO_INCREMENT,
-            `code` varchar(255) NOT NULL,
-            `name` varchar(255) NOT NULL DEFAULT '',
-            `email` varchar(255) NOT NULL DEFAULT '',
-            `public` char(1) NOT NULL DEFAULT '1',
-            `sort` int(4) NOT NULL DEFAULT 0,
-            PRIMARY KEY  (code),
-            UNIQUE KEY session_id (id)
-          ) $charset_collate;
-            ";
-
+            CREATE TABLE `{$wpdb->prefix}wc_warehouse` (
+              `id` int(4) UNSIGNED NOT NULL AUTO_INCREMENT,
+              `code` varchar(50) NOT NULL,
+              `name` varchar(255) NOT NULL DEFAULT '',
+              `email` varchar(255) NOT NULL DEFAULT '',
+              `public` char(1) NOT NULL DEFAULT '1',
+              `sort` int(4) NOT NULL DEFAULT '0',
+              PRIMARY KEY (id),
+              UNIQUE KEY code_unique (code)
+            ) $charset_collate;
+    ";
     dbDelta($sql);
-}
 
-// run the install scripts upon plugin activation
+}
 register_activation_hook(__FILE__, 'wc_multi_warehouse_install');
 
 
-
+# FIXME
 function wc_multi_warehouse_uninstall() {
     global $wpdb;
+
+    require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+
     $sql = "DROP TABLE {$wpdb->prefix}wc_warehouse;";
     dbDelta($sql);
 
@@ -103,8 +103,3 @@ require_once('category_extra_fields.php');
 require_once('api.php');
 require_once('order_stock_functions.php');
 require_once('email.php');
-
-
-// add_filter( 'rest_authentication_errors', function(){
-//     wp_set_current_user( 1 ); // replace with the ID of a WP user with the authorization you want
-// }, 101 );
