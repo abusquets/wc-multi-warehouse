@@ -23,13 +23,13 @@ function wc_multi_warehouse_warehouses_create() {
     $sort = $_POST["sort"];
 
     if ($res = $wpdb->insert(
-      $table_name, //table
-      array('code' => $code, 'name' => $name, 'email' => $email, 'public' => $public, 'sort' => $sort), //data
-      array('%s', '%s', '%s', '%s', '%s') //data format
+        $table_name, //table
+        array('code' => $code, 'name' => $name, 'email' => $email, 'public' => $public, 'sort' => $sort), //data
+        array('%s', '%s', '%s', '%s', '%s') //data format
     )){
-      $message = _('Warehouse created');
+        $message = _('Warehouse created');
     }else{
-      $message = _('Error');
+        $message = _('Error');
     }
 
   }
